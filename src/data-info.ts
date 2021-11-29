@@ -20,19 +20,21 @@ class DataInfo {
    * @param html 页面 html
    * @returns
    */
-  getDataInfo = (html: string) => {
+  getDataInfo = (html: string): Promise<string> => {
     const $ = cheerio.load(html);
 
-    if (($('script')[11]?.children[0] as any)?.data) {
-      this.pageData = ($('script')[11]?.children[0] as any)?.data;
-      if (this.pageData) {
-        const sumData = JSON.parse(this.pageData);
+    return new Promise((resolve, reject) => {
+      if (($('script')[11]?.children[0] as any)?.data) {
+        this.pageData = ($('script')[11]?.children[0] as any)?.data;
+        if (this.pageData) {
+          const sumData = JSON.parse(this.pageData);
 
-        return this.formatDataInfo(sumData.component[0].summaryDataIn)
+          resolve(this.formatDataInfo(sumData.component[0].summaryDataIn));
+        }
       }
-    }
 
-    return '获取数据失败'
+      reject('获取数据失败');
+    });
   }
 
   // 格式化数据信息
