@@ -4,15 +4,23 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node ./src/spider.ts"
+    "start": "ts-node ./src/index.ts",
+    "dev": "gulp dev",
+    "build": "gulp"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/gulp": "^4.0.9",
+    "@types/gulp-sourcemaps": "0.0.35",
     "@types/superagent": "^4.1.13",
     "axios": "^0.24.0",
     "dayjs": "^1.10.7",
+    "gulp": "^4.0.2",
+    "gulp-clean": "^0.4.0",
+    "gulp-sourcemaps": "^3.0.0",
+    "gulp-typescript": "^6.0.0-alpha.1",
     "ts-node": "^10.4.0",
     "typescript": "^4.5.2"
   },
