@@ -1,14 +1,14 @@
 import superagent from 'superagent';
+import cheerio from 'cheerio';
 import fs from 'fs';
 import axios from 'axios';
 import { SITE_URL, RES_FILE_PATH } from './constant';
-import DataInfo from './data-info';
-
-const dataInfo = DataInfo.getInstance();
+import { GetSpecifyData } from './interface';
+import { formatDataInfo } from './helper';
 
 class Spider {
-  constructor () {
-    this.getHtmlContent();
+  constructor (getSpecifyData: GetSpecifyData) {
+    this.getHtmlContent(getSpecifyData);
   }
 
   // 获取页面 html 信息通过 superagent 库
@@ -31,14 +31,32 @@ class Spider {
   }
 
   // 获取
-  getHtmlContent = async () => {
+  getHtmlContent = async (getSpecifyData: GetSpecifyData) => {
     // 1. 获取页面 html 信息
     const html = await this.getHtmlByAxios();
     // 2. 获取对应标签内容信息（可以适当处理输入内容格式）
-    const data = await dataInfo.getDataInfo(html);
+    const data = await getSpecifyData(html);
     // 3. 内容写入文件
     this.writeFile(data);
   }
 }
 
-new Spider();
+// 获取指定内容信息
+const getSpecifyData = (html: string): Promise<string> => {
+  const $ = cheerio.load(html);
+
+  return new Promise((resolve, reject) => {
+    if (($('script')[11]?.children[0] as any)?.data) {
+      const pageData = ($('script')[11]?.children[0] as any)?.data;
+      const sumData = JSON.parse(pageData);
+
+      console.log(sumData);
+
+      resolve(formatDataInfo(sumData.component[0].summaryDataIn));
+    }
+
+    reject('获取数据失败');
+  });
+}
+
+new Spider(getSpecifyData);
