@@ -70,9 +70,10 @@ export const formatDataInfo = (data: Data) => {
 
   forEach(provinceData, (province: ProvinceData) => {
     dataJson[province?.area] = returnDataType('省份', province);
+    dataJson[province?.area].subList = {};
 
     forEach(province?.subList, (area: AreaData) => {
-      dataJson[province?.area][area?.city] = returnDataType('市区', area)
+      (dataJson[province?.area]?.subList)[area?.city] = returnDataType('市区', area)
     })
   })
 
